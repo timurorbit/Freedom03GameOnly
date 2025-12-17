@@ -17,7 +17,20 @@ namespace _Game.Scripts.Util
 
         private IEnumerator LoadSceneAsync()
         {
+            if (string.IsNullOrEmpty(sceneName))
+            {
+                Debug.LogError("SceneLoaderAsync: Scene name is not set or is empty.");
+                yield break;
+            }
+
             AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
+            
+            if (asyncOperation == null)
+            {
+                Debug.LogError($"SceneLoaderAsync: Failed to load scene '{sceneName}'. Make sure the scene is added to Build Settings.");
+                yield break;
+            }
+            
             asyncOperation.allowSceneActivation = false;
 
             while (!asyncOperation.isDone)
