@@ -10,9 +10,10 @@ namespace _Game.Scripts.Behaviours
     /// 1. Attach this component to a GameObject with a Collider
     /// 2. Assign an MMF_Player prefab to the collisionFeedback field
     /// 3. (Optional) Set filterTag to only respond to specific tagged objects
-    /// 4. (Optional) Adjust cleanupDelay based on your feedback duration
+    /// 4. (Optional) Adjust positionOffset to offset the feedback from the collision point
+    /// 5. (Optional) Adjust cleanupDelay based on your feedback duration
     /// 
-    /// The feedback will be instantiated at the exact collision contact point.
+    /// The feedback will be instantiated at the exact collision contact point (plus offset if configured).
     /// </summary>
     public class CollisionFeedback : MonoBehaviour
     {
@@ -20,6 +21,10 @@ namespace _Game.Scripts.Behaviours
         [SerializeField] private MMF_Player collisionFeedback;
         
         [SerializeField] private string filterTag = "";
+        
+        [SerializeField]
+        [Tooltip("Offset to apply to the collision position")]
+        private Vector3 positionOffset = Vector3.zero;
         
         [SerializeField] 
         [Tooltip("Time in seconds before cleaning up the instantiated feedback")]
@@ -40,8 +45,8 @@ namespace _Game.Scripts.Behaviours
             // Play feedback if assigned
             if (collisionFeedback != null && collision.contactCount > 0)
             {
-                // Get the first contact point position
-                Vector3 collisionPosition = collision.GetContact(0).point;
+                // Get the first contact point position and apply offset
+                Vector3 collisionPosition = collision.GetContact(0).point + positionOffset;
                 
                 // Create a temporary GameObject at the collision position to hold the feedback
                 GameObject tempFeedbackHolder = new GameObject($"CollisionFeedback_{GetInstanceID()}");
