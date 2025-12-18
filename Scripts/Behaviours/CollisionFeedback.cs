@@ -12,6 +12,10 @@ namespace _Game.Scripts.Behaviours
         [SerializeField] private MMF_Player collisionFeedback;
         
         [SerializeField] private string filterTag = "";
+        
+        [SerializeField] 
+        [Tooltip("Time in seconds before cleaning up the instantiated feedback")]
+        private float cleanupDelay = 5f;
 
         /// <summary>
         /// Called when a collision occurs
@@ -32,15 +36,15 @@ namespace _Game.Scripts.Behaviours
                 Vector3 collisionPosition = collision.GetContact(0).point;
                 
                 // Create a temporary GameObject at the collision position to hold the feedback
-                GameObject tempFeedbackHolder = new GameObject("TempFeedbackHolder");
+                GameObject tempFeedbackHolder = new GameObject($"CollisionFeedback_{GetInstanceID()}");
                 tempFeedbackHolder.transform.position = collisionPosition;
                 
                 // Instantiate the feedback at the collision position
                 MMF_Player feedbackInstance = Instantiate(collisionFeedback, tempFeedbackHolder.transform);
                 feedbackInstance.PlayFeedbacks();
                 
-                // Destroy the temporary holder after the feedback is likely done (adjust time as needed)
-                Destroy(tempFeedbackHolder, 5f);
+                // Destroy the temporary holder after the specified cleanup delay
+                Destroy(tempFeedbackHolder, cleanupDelay);
             }
         }
     }
