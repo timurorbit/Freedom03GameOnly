@@ -4,7 +4,15 @@ using UnityEngine;
 namespace _Game.Scripts.Behaviours
 {
     /// <summary>
-    /// Plays MMF Feedback when a collision occurs at the collision position
+    /// Plays MMF Feedback when a collision occurs at the collision position.
+    /// 
+    /// Usage:
+    /// 1. Attach this component to a GameObject with a Collider
+    /// 2. Assign an MMF_Player prefab to the collisionFeedback field
+    /// 3. (Optional) Set filterTag to only respond to specific tagged objects
+    /// 4. (Optional) Adjust cleanupDelay based on your feedback duration
+    /// 
+    /// The feedback will be instantiated at the exact collision contact point.
     /// </summary>
     public class CollisionFeedback : MonoBehaviour
     {
