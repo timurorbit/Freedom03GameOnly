@@ -9,13 +9,9 @@ namespace _Game.Scripts.Behaviours
     public class CollisionFeedback : MonoBehaviour
     {
         [Header("Feedback Settings")]
-        [SerializeField]
-        [Tooltip("The MMF Player feedback to play on collision")]
-        private MMF_Player collisionFeedback;
-
-        [SerializeField]
-        [Tooltip("Optional tag filter - only trigger on objects with this tag. Leave empty to trigger on any collision.")]
-        private string filterTag = "";
+        [SerializeField] private MMF_Player collisionFeedback;
+        
+        [SerializeField] private string filterTag = "";
 
         /// <summary>
         /// Called when a collision occurs
@@ -35,9 +31,16 @@ namespace _Game.Scripts.Behaviours
                 // Get the first contact point position
                 Vector3 collisionPosition = collision.GetContact(0).point;
                 
-                // Play the feedback at the collision position
-                collisionFeedback.transform.position = collisionPosition;
-                collisionFeedback.PlayFeedbacks();
+                // Create a temporary GameObject at the collision position to hold the feedback
+                GameObject tempFeedbackHolder = new GameObject("TempFeedbackHolder");
+                tempFeedbackHolder.transform.position = collisionPosition;
+                
+                // Instantiate the feedback at the collision position
+                MMF_Player feedbackInstance = Instantiate(collisionFeedback, tempFeedbackHolder.transform);
+                feedbackInstance.PlayFeedbacks();
+                
+                // Destroy the temporary holder after the feedback is likely done (adjust time as needed)
+                Destroy(tempFeedbackHolder, 5f);
             }
         }
     }
